@@ -1,8 +1,10 @@
 # GlottoTie Acoustic and EGG Analysis
 
-This repository contains MATLAB scripts for the preprocessing, analysis, and feature extraction of Electroglottograph (EGG) and Microphone (Acoustic) signals. The tools are designed to analyze both **Connected Speech (CS)** and **Sustained Vowel (SV)** recordings. 
+This repository contains the official implementation for the preprocessing, feature extraction, and deep learning-based classification of Electroglottograph (EGG) and Microphone (Acoustic) signals described in our study. 
 
-This code is provided to ensure full transparency and reproducibility of the data preprocessing and classification model inputs described in our study.
+The repository is split into two core pipelines:
+1.  **Signal Processing Pipeline (MATLAB)**: Preprocesses raw biomedical signals and exports time-frequency representations (Mel-spectrograms).
+2.  **Few-Shot Learning Pipeline (PyTorch)**: Implements Prototypical Networks to train and evaluate disease-subtype classification models using a 3-way $K$-shot configuration.
 
 ## 📁 Repository Contents
 
@@ -52,12 +54,12 @@ Run `GlottoTie_SV_analysis.m`. You will be prompted to enter a mode:
     * Performs macro-level FFT and notch filtering (275Hz harmonics) over the entire unsegmented recording.
     * Plots the time-domain signals alongside the raw and filtered frequency spectrums.
 
-## 📊 Data Format
-The provided sample `.csv` files contain two columns of raw data sampled at **11,000 Hz**:
-1.  **Column 1:** Raw Electroglottograph (EGG) Data
-2.  **Column 2:** Raw Microphone (Acoustic) Data
-
-*(Note: Patient-identifying information has been removed or anonymized in the sample files to comply with privacy regulations.)*
+### 3. Few-Shot Classification & Deep Learning (Python/PyTorch)
+* **`config.py`**: Configuration file managing hyper-parameters, data paths, and global training/evaluation settings.
+* **`dataloader.py`**: Custom dataset parser handling 3-way 2-shot episodic sampling for both commercial pre-training big data (`FewShotDataset`) and custom wearable trials (`OurDeviceDataset`). Includes `StrongAugmentation` for noise injection, scaling, and time-shifting.
+* **`model.py`**: Prototypical Network architecture built on top of a 5-block convolutional neural network (CNN) encoder with embedded 2D/1D dropout layers and $L_2$ normalization.
+* **`train.py`**: Main script for meta-training the framework, utilizing StepLR decay, gradient clipping, periodic cross-validation evaluation, and auto-exporting training/validation learning curves.
+* **`test_result_random.py`**: Robust, bias-free evaluation script running $N$ independent random-support trials (mean $\pm$ SD) to assess clinical generalizability, complete with t-SNE cluster rendering and aggregated confusion matrix auditing.
 
 ## 📝 Citation & Reproducibility
 This repository is published alongside our manuscript to fulfill data availability and reproducibility requirements. If you utilize this code or preprocessing methodology in your research, please cite our paper accordingly.
